@@ -1,0 +1,17 @@
+# Ambiente virtual do Python
+.venv/
+
+# Arquivos gerados pelo Python
+__pycache__/
+*.pyc
+
+# Configurações locais e segredos
+.env
+
+# Banco de dados local
+*.db
+*.db-shm
+*.db-wal
+
+# Cache dos testes
+.pytest_cache/
