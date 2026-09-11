@@ -35,7 +35,7 @@ Vinicius de Oliveira Viana
 
 
 
-## Como executar no Windows
+## Como executar para desenvolvimento no Windows
 
 ### Pré-requisitos
 
@@ -78,7 +78,13 @@ Acesse no navegador:
 
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
-### Funcionalidade disponível
+### Funcionalidades disponíveis
 
-Atualmente, a aplicação possui uma rota inicial que retorna uma
-mensagem em JSON. As funcionalidades do MVP ainda serão implementadas.
+- Cadastro de clientes com CPF, nome e telefone obrigatórios.
+- E-mail e endereço opcionais.
+- Validação do formato de CPF, telefone e e-mail.
+- Bloqueio de CPF duplicado.
+- Listagem de clientes e consulta por CPF.
+- Persistência dos registros em banco SQLite.
+
+A validação dos dígitos verificadores do CPF ainda será implementada.
