@@ -32,3 +32,53 @@ Em desenvolvimento. A implementação será realizada por etapas.
 ## Autor
 
 Vinicius de Oliveira Viana
+
+
+
+## Como executar no Windows
+
+### Pré-requisitos
+
+- Python instalado. Versão utilizada no desenvolvimento: 3.14.2.
+- Git instalado.
+
+### Instalação
+
+Clone o repositório e entre na pasta:
+
+```powershell
+git clone https://github.com/Viana660/sistema-de-triagem-.git
+cd sistema-de-triagem-
+```
+
+Crie o ambiente virtual:
+
+```powershell
+py -m venv .venv
+```
+
+Instale as dependências:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+### Execução
+
+Inicie o servidor de desenvolvimento:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn main:app --reload
+```
+
+Acesse no navegador:
+
+- Aplicação: http://127.0.0.1:8000
+- Documentação da API: http://127.0.0.1:8000/docs
+
+Para encerrar o servidor, pressione Ctrl + C no terminal.
+
+### Funcionalidade disponível
+
+Atualmente, a aplicação possui uma rota inicial que retorna uma
+mensagem em JSON. As funcionalidades do MVP ainda serão implementadas.
