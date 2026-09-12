@@ -86,5 +86,8 @@ Para encerrar o servidor, pressione Ctrl + C no terminal.
 - Bloqueio de CPF duplicado.
 - Listagem de clientes e consulta por CPF.
 - Persistência dos registros em banco SQLite.
+- Edição parcial de clientes, preservando os campos não enviados.
+- Remoção de e-mail e endereço opcionais.
+- Bloqueio da alteração de CPF pela rota de edição.
 
 A validação dos dígitos verificadores do CPF ainda será implementada.

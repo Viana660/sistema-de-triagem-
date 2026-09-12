@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.database import Base, engine, get_db
 from app.models import Cliente
-from app.schemas import ClienteCreate, ClienteOut
+from app.schemas import ClienteCreate, ClienteOut, ClienteUpdate
 
 
 @asynccontextmanager
@@ -79,4 +79,41 @@ def consultar_cliente(cpf: str, db: Session = Depends(get_db)):
             detail="Cliente não encontrado.",
         )
 
+    return cliente
+
+@app.patch("/clientes/{cpf}", response_model=ClienteOut)
+def atualizar_cliente(
+    cpf: str,
+    dados: ClienteUpdate,
+    db: Session = Depends(get_db),
+):
+    cliente = db.get(Cliente, cpf)
+
+    if cliente is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Cliente não encontrado.",
+        )
+
+    alteracoes = dados.model_dump(exclude_unset=True)
+
+    if not alteracoes:
+        raise HTTPException(
+            status_code=400,
+            detail="Envie pelo menos um campo para atualizar.",
+        )
+
+    for campo, valor in alteracoes.items():
+        setattr(cliente, campo, valor)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível atualizar: conflito nos dados.",
+        )
+
+    db.refresh(cliente)
     return cliente
