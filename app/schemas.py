@@ -1,6 +1,9 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
-class ClienteCreate(BaseModel):
+from app.validators import cpf_valido
+
+
+class ClienteBase(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     cpf: str = Field(pattern=r"^[0-9]{11}$")
@@ -10,7 +13,16 @@ class ClienteCreate(BaseModel):
     endereco: str | None = Field(default=None, max_length=500)
 
 
-class ClienteOut(ClienteCreate):
+class ClienteCreate(ClienteBase):
+    @field_validator("cpf")
+    @classmethod
+    def validar_cpf(cls, valor):
+        if not cpf_valido(valor):
+            raise ValueError("CPF inválido: confira os dígitos informados.")
+        return valor
+
+
+class ClienteOut(ClienteBase):
     model_config = ConfigDict(
         from_attributes=True,
         str_strip_whitespace=True,

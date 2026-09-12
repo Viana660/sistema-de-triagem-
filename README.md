@@ -78,6 +78,19 @@ Acesse no navegador:
 
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
+## Testes automatizados
+
+Na raiz do projeto, execute:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+Os testes verificam o cálculo dos dígitos do CPF e a rejeição de
+formatos inválidos e sequências repetidas.
+
+A validação é matemática e não consulta a situação cadastral na Receita Federal.
+
 ### Funcionalidades disponíveis
 
 - Cadastro de clientes com CPF, nome e telefone obrigatórios.
@@ -89,5 +102,5 @@ Para encerrar o servidor, pressione Ctrl + C no terminal.
 - Edição parcial de clientes, preservando os campos não enviados.
 - Remoção de e-mail e endereço opcionais.
 - Bloqueio da alteração de CPF pela rota de edição.
-
-A validação dos dígitos verificadores do CPF ainda será implementada.
+- Validação dos dígitos verificadores do CPF em novos cadastros.
+- Rejeição de CPFs formados por números repetidos.
