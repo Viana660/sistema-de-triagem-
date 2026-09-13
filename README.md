@@ -104,3 +104,9 @@ A validação é matemática e não consulta a situação cadastral na Receita F
 - Bloqueio da alteração de CPF pela rota de edição.
 - Validação dos dígitos verificadores do CPF em novos cadastros.
 - Rejeição de CPFs formados por números repetidos.
+- Cadastro de aparelhos com IMEI, marca, modelo e cor obrigatórios.
+- Descrição opcional do aparelho.
+- Validação do IMEI com exatamente 15 números.
+- Bloqueio de IMEI duplicado.
+- Listagem de aparelhos e consulta por IMEI.
+- Persistência dos aparelhos em SQLite.
