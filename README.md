@@ -80,6 +80,8 @@ Acesse no navegador:
 
 - Nova triagem: http://127.0.0.1:8000/interface/triagem.html
 
+- Cadastro de clientes: http://127.0.0.1:8000/interface/clientes.html
+
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
 ## Testes automatizados
@@ -162,6 +164,9 @@ Os arquivos do banco e os backups não são versionados.
 - Seleção de cliente, aparelho e técnico, com opção de fila geral.
 - Preenchimento obrigatório dos oito itens da vistoria.
 - Exibição de mensagens de sucesso e erros de cadastro.
+- Cadastro de clientes pelo navegador, com e-mail e endereço opcionais.
+- Exibição dos erros de validação e de CPF duplicado na interface.
 
-Para criar uma triagem pela interface, cadastre previamente o cliente
-e o aparelho pela documentação da API, disponível em `/docs`.
+Para criar uma triagem, cadastre o cliente pela interface de cadastro
+de clientes. Por enquanto, o aparelho deve ser cadastrado pela
+documentação da API, disponível em `/docs`.

@@ -142,11 +142,11 @@ a {
     color: #1d4ed8;
 }
 
-#form-triagem {
+.formulario {
     max-width: 1000px;
 }
 
-#form-triagem fieldset {
+.formulario fieldset {
     min-width: 0;
     margin: 16px 0;
     padding: 20px;
@@ -155,7 +155,7 @@ a {
     background: white;
 }
 
-#form-triagem legend {
+.formulario legend {
     padding: 0 8px;
     font-weight: bold;
 }
@@ -166,15 +166,16 @@ a {
     gap: 16px;
 }
 
-#form-triagem label {
+.formulario label {
     display: grid;
     gap: 8px;
     margin-bottom: 16px;
     font-weight: bold;
 }
 
-#form-triagem select,
-#form-triagem textarea {
+.formulario input,
+.formulario select,
+.formulario textarea {
     width: 100%;
     min-width: 0;
     padding: 10px;
@@ -185,12 +186,13 @@ a {
     background: white;
 }
 
-#form-triagem textarea {
+.formulario textarea {
     resize: vertical;
 }
 
-#form-triagem select:focus-visible,
-#form-triagem textarea:focus-visible {
+.formulario input:focus-visible,
+.formulario select:focus-visible,
+.formulario textarea:focus-visible {
     outline: 3px solid #1d4ed8;
     outline-offset: 2px;
 }

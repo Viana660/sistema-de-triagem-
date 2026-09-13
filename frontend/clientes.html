@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar cliente</title>
+    <link rel="stylesheet" href="/interface/css/style.css">
+    <script src="/interface/js/clientes.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Cadastrar cliente</h1>
+                <p>Registre os dados para abrir uma ordem de serviço.</p>
+            </div>
+            <a href="/interface/triagem.html">Nova triagem</a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-cliente" class="formulario">
+            <fieldset id="campos-cliente">
+                <legend>Dados do cliente</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        Nome *
+                        <input id="nome" autocomplete="name"
+                               minlength="2" maxlength="255" required>
+                    </label>
+
+                    <label>
+                        CPF — somente números *
+                        <input id="cpf" inputmode="numeric"
+                               pattern="[0-9]{11}" maxlength="11"
+                               title="Informe os 11 números do CPF."
+                               required>
+                    </label>
+
+                    <label>
+                        Telefone com DDD — somente números *
+                        <input id="telefone" type="tel" autocomplete="tel"
+                               pattern="[0-9]{10,11}" maxlength="11"
+                               title="Informe 10 ou 11 números, incluindo o DDD."
+                               required>
+                    </label>
+
+                    <label>
+                        E-mail
+                        <input id="email" type="email"
+                               autocomplete="email" maxlength="255">
+                    </label>
+                </div>
+
+                <label>
+                    Endereço
+                    <textarea id="endereco" rows="3"
+                              autocomplete="street-address"
+                              maxlength="500"></textarea>
+                </label>
+
+                <p>* Campos obrigatórios.</p>
+                <button type="submit">Cadastrar cliente</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>
