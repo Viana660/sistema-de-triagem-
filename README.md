@@ -91,6 +91,23 @@ formatos inválidos e sequências repetidas.
 
 A validação é matemática e não consulta a situação cadastral na Receita Federal.
 
+## Atualização de bancos existentes
+
+Para bancos criados antes da inclusão do técnico responsável na OS,
+pare o servidor e execute:
+
+```powershell
+.\.venv\Scripts\python.exe migrations/001_adicionar_tecnico_triagem.py
+```
+
+A migração cria um backup em `backups/` antes de adicionar a coluna
+`tecnico_id`. As OS existentes permanecem na fila geral.
+
+Em uma instalação nova, a estrutura atual é criada ao iniciar a aplicação,
+sem necessidade de executar essa migração.
+
+Os arquivos do banco e os backups não são versionados.
+
 ### Funcionalidades disponíveis
 
 - Cadastro de clientes com CPF, nome e telefone obrigatórios.
@@ -110,3 +127,10 @@ A validação é matemática e não consulta a situação cadastral na Receita F
 - Bloqueio de IMEI duplicado.
 - Listagem de aparelhos e consulta por IMEI.
 - Persistência dos aparelhos em SQLite.
+- Cadastro e consulta de técnicos.
+- Geração de OS vinculada a cliente e aparelho existentes.
+- Checklist obrigatório de oito itens na entrada.
+- Prioridade normal ou alta, com status inicial pendente.
+- Listagem e consulta das ordens de serviço.
+- Atribuição e troca de técnico responsável.
+- Retorno da OS à fila geral, sem técnico atribuído.

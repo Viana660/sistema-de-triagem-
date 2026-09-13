@@ -4,9 +4,20 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import Base, engine, get_db
-from app.models import Cliente, Equipamento
-from app.schemas import ClienteCreate, ClienteOut, ClienteUpdate
-from app.schemas import EquipamentoCreate, EquipamentoOut
+from app.models import Cliente, Equipamento, Tecnico, Triagem
+from app.schemas import (
+    ClienteCreate,
+    ClienteOut,
+    ClienteUpdate,
+    EquipamentoCreate,
+    EquipamentoOut,
+    TriagemCreate,
+    TriagemOut,
+    TecnicoCreate,
+    TecnicoOut,
+    AtribuicaoTecnico,
+)
+
 
 
 @asynccontextmanager
@@ -182,3 +193,167 @@ def consultar_equipamento(
         )
 
     return equipamento
+
+@app.post("/triagens/", response_model=TriagemOut, status_code=201)
+def cadastrar_triagem(
+    dados: TriagemCreate,
+    db: Session = Depends(get_db),
+):
+    cliente = db.get(Cliente, dados.cliente_cpf)
+
+    if cliente is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Cliente não encontrado.",
+        )
+
+    equipamento = db.get(Equipamento, dados.equipamento_imei)
+
+    if equipamento is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Aparelho não encontrado.",
+        )
+
+    if dados.tecnico_id is not None:
+        tecnico = db.get(Tecnico, dados.tecnico_id)
+
+        if tecnico is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Técnico não encontrado.",
+            )
+
+    triagem = Triagem(
+        cliente_cpf=dados.cliente_cpf,
+        equipamento_imei=dados.equipamento_imei,
+        tecnico_id=dados.tecnico_id,
+        defeito_descricao=dados.defeito_descricao,
+        prioridade=dados.prioridade,
+        checklist=dados.checklist.model_dump(),
+        observacoes=dados.observacoes,
+        status="pendente",
+    )
+
+    db.add(triagem)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível salvar a OS: conflito nos vínculos.",
+        )
+
+    db.refresh(triagem)
+    return triagem
+
+
+@app.get("/triagens/", response_model=list[TriagemOut])
+def listar_triagens(db: Session = Depends(get_db)):
+    consulta = select(Triagem).order_by(Triagem.id.desc())
+    return db.scalars(consulta).all()
+
+
+@app.get("/triagens/{triagem_id}", response_model=TriagemOut)
+def consultar_triagem(
+    triagem_id: int,
+    db: Session = Depends(get_db),
+):
+    triagem = db.get(Triagem, triagem_id)
+
+    if triagem is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Ordem de serviço não encontrada.",
+        )
+
+    return triagem
+
+@app.post("/tecnicos/", response_model=TecnicoOut, status_code=201)
+def cadastrar_tecnico(
+    dados: TecnicoCreate,
+    db: Session = Depends(get_db),
+):
+    tecnico = Tecnico(
+        nome=dados.nome,
+        telefone=dados.telefone,
+        especialidade=dados.especialidade,
+    )
+
+    db.add(tecnico)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível cadastrar: conflito nos dados.",
+        )
+
+    db.refresh(tecnico)
+    return tecnico
+
+
+@app.get("/tecnicos/", response_model=list[TecnicoOut])
+def listar_tecnicos(db: Session = Depends(get_db)):
+    consulta = select(Tecnico).order_by(Tecnico.nome, Tecnico.id)
+    return db.scalars(consulta).all()
+
+
+@app.get("/tecnicos/{tecnico_id}", response_model=TecnicoOut)
+def consultar_tecnico(
+    tecnico_id: int,
+    db: Session = Depends(get_db),
+):
+    tecnico = db.get(Tecnico, tecnico_id)
+
+    if tecnico is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Técnico não encontrado.",
+        )
+
+    return tecnico
+
+@app.patch(
+    "/triagens/{triagem_id}/tecnico",
+    response_model=TriagemOut,
+)
+def atribuir_tecnico(
+    triagem_id: int,
+    dados: AtribuicaoTecnico,
+    db: Session = Depends(get_db),
+):
+    triagem = db.get(Triagem, triagem_id)
+
+    if triagem is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Ordem de serviço não encontrada.",
+        )
+
+    if dados.tecnico_id is not None:
+        tecnico = db.get(Tecnico, dados.tecnico_id)
+
+        if tecnico is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Técnico não encontrado.",
+            )
+
+    triagem.tecnico_id = dados.tecnico_id
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível atribuir o técnico: conflito nos vínculos.",
+        )
+
+    db.refresh(triagem)
+    return triagem

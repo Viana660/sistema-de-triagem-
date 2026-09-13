@@ -15,3 +15,6 @@ __pycache__/
 
 # Cache dos testes
 .pytest_cache/
+
+# Cópias locais do banco
+backups/
