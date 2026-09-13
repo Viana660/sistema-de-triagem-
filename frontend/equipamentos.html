@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar aparelho</title>
+    <link rel="stylesheet" href="/interface/css/style.css">
+    <script src="/interface/js/equipamentos.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Cadastrar aparelho</h1>
+                <p>Registre o equipamento para abrir uma ordem de serviço.</p>
+            </div>
+            <a href="/interface/triagem.html">Nova triagem</a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-equipamento" class="formulario">
+            <fieldset id="campos-equipamento">
+                <legend>Dados do aparelho</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        IMEI — somente números *
+                        <input id="imei" inputmode="numeric"
+                               pattern="[0-9]{15}" maxlength="15"
+                               title="Informe os 15 números do IMEI."
+                               required>
+                    </label>
+
+                    <label>
+                        Marca *
+                        <input id="marca" minlength="1"
+                               maxlength="100" required>
+                    </label>
+
+                    <label>
+                        Modelo *
+                        <input id="modelo" minlength="1"
+                               maxlength="100" required>
+                    </label>
+
+                    <label>
+                        Cor *
+                        <input id="cor" minlength="1"
+                               maxlength="50" required>
+                    </label>
+                </div>
+
+                <label>
+                    Descrição adicional
+                    <textarea id="descricao" rows="3"
+                              maxlength="500"></textarea>
+                </label>
+
+                <p>* Campos obrigatórios.</p>
+                <button type="submit">Cadastrar aparelho</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

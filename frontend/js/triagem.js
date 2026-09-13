@@ -102,9 +102,10 @@ async function carregarCadastros() {
         }
 
         if (clientes.length === 0 || equipamentos.length === 0) {
-            mensagem.textContent =
-                "Cadastre pelo menos um cliente e um aparelho na API. Depois recarregue esta página.";
-            return;
+           mensagem.textContent =
+              "Cadastre pelo menos um cliente e um aparelho pelos links acima. " +
+              "Depois retorne a esta página.";
+              return;
         }
 
         campos.disabled = false;

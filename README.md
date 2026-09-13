@@ -82,6 +82,8 @@ Acesse no navegador:
 
 - Cadastro de clientes: http://127.0.0.1:8000/interface/clientes.html
 
+- Cadastro de aparelhos: http://127.0.0.1:8000/interface/equipamentos.html
+
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
 ## Testes automatizados
@@ -166,7 +168,9 @@ Os arquivos do banco e os backups não são versionados.
 - Exibição de mensagens de sucesso e erros de cadastro.
 - Cadastro de clientes pelo navegador, com e-mail e endereço opcionais.
 - Exibição dos erros de validação e de CPF duplicado na interface.
+- Cadastro de aparelhos pelo navegador.
+- Exibição de erros de validação e de IMEI duplicado na interface.
 
-Para criar uma triagem, cadastre o cliente pela interface de cadastro
-de clientes. Por enquanto, o aparelho deve ser cadastrado pela
-documentação da API, disponível em `/docs`.
+Para criar uma triagem, cadastre o cliente e o aparelho pelas respectivas
+interfaces. Depois, abra Nova triagem, selecione os registros e preencha
+o defeito relatado e a vistoria de entrada.
