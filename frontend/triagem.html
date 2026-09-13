@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova triagem</title>
+    <link rel="stylesheet" href="/interface/css/style.css">
+    <script src="/interface/js/triagem.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Nova triagem</h1>
+                <p>Registre a entrada do aparelho e sua vistoria.</p>
+            </div>
+            <a href="/interface/kanban.html">Abrir bancada técnica</a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-triagem">
+            <fieldset id="campos-triagem" disabled>
+                <legend>Dados do atendimento</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        Cliente *
+                        <select id="cliente" required></select>
+                    </label>
+
+                    <label>
+                        Aparelho *
+                        <select id="equipamento" required></select>
+                    </label>
+
+                    <label>
+                        Técnico responsável
+                        <select id="tecnico"></select>
+                    </label>
+
+                    <label>
+                        Prioridade *
+                        <select id="prioridade" required>
+                            <option value="normal">Normal</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </label>
+                </div>
+
+                <label>
+                    Defeito relatado pelo cliente *
+                    <textarea
+                        id="defeito"
+                        rows="3"
+                        minlength="5"
+                        maxlength="2000"
+                        required
+                    ></textarea>
+                </label>
+
+                <fieldset>
+                    <legend>Vistoria de entrada</legend>
+                    <p>
+                        Responda todos os itens. Se não foi possível avaliar,
+                        escolha “Não testado”.
+                    </p>
+                    <div id="checklist" class="grade-formulario"></div>
+                </fieldset>
+
+                <label>
+                    Observações
+                    <textarea
+                        id="observacoes"
+                        rows="3"
+                        maxlength="2000"
+                    ></textarea>
+                </label>
+
+                <p>* Campos obrigatórios.</p>
+                <button type="submit">Gerar ordem de serviço</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

@@ -78,6 +78,8 @@ Acesse no navegador:
 
 - Bancada técnica: http://127.0.0.1:8000/interface/kanban.html
 
+- Nova triagem: http://127.0.0.1:8000/interface/triagem.html
+
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
 ## Testes automatizados
@@ -156,3 +158,10 @@ Os arquivos do banco e os backups não são versionados.
 - Exibição do nome do técnico responsável.
 - Filtro por técnico ou fila geral.
 - Atualização do quadro após mudanças e conflitos de status.
+- Formulário para gerar ordens de serviço pelo navegador.
+- Seleção de cliente, aparelho e técnico, com opção de fila geral.
+- Preenchimento obrigatório dos oito itens da vistoria.
+- Exibição de mensagens de sucesso e erros de cadastro.
+
+Para criar uma triagem pela interface, cadastre previamente o cliente
+e o aparelho pela documentação da API, disponível em `/docs`.
