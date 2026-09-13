@@ -86,10 +86,21 @@ Na raiz do projeto, execute:
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Os testes verificam o cálculo dos dígitos do CPF e a rejeição de
-formatos inválidos e sequências repetidas.
+Os testes verificam:
 
-A validação é matemática e não consulta a situação cadastral na Receita Federal.
+- Aceitação de CPF com dígitos verificadores consistentes.
+- Rejeição de CPF com dígitos incorretos, formato inválido ou números repetidos.
+- Avanço da OS de pendente para em andamento e depois para concluído.
+- Bloqueio de saltos e retornos de status.
+- Rejeição de pedidos baseados em um status desatualizado.
+- Retorno de erro para uma OS inexistente.
+
+Os testes de status utilizam um banco SQLite em memória, sem alterar
+os registros do banco da aplicação. Eles verificam diretamente a função
+de atualização, sem enviar requisições HTTP.
+
+A validação do CPF é matemática e não consulta a situação cadastral
+na Receita Federal.
 
 ## Atualização de bancos existentes
 
@@ -134,3 +145,6 @@ Os arquivos do banco e os backups não são versionados.
 - Listagem e consulta das ordens de serviço.
 - Atribuição e troca de técnico responsável.
 - Retorno da OS à fila geral, sem técnico atribuído.
+- Avanço sequencial da OS: pendente, em andamento e concluído.
+- Bloqueio de saltos e retornos de status.
+- Rejeição de mudanças baseadas em um status desatualizado.

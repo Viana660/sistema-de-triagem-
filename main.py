@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import Base, engine, get_db
@@ -16,8 +16,8 @@ from app.schemas import (
     TecnicoCreate,
     TecnicoOut,
     AtribuicaoTecnico,
+    MudancaStatus
 )
-
 
 
 @asynccontextmanager
@@ -355,5 +355,68 @@ def atribuir_tecnico(
             detail="Não foi possível atribuir o técnico: conflito nos vínculos.",
         )
 
+    db.refresh(triagem)
+    return triagem
+
+@app.patch(
+    "/triagens/{triagem_id}/status",
+    response_model=TriagemOut,
+)
+def atualizar_status_triagem(
+    triagem_id: int,
+    dados: MudancaStatus,
+    db: Session = Depends(get_db),
+):
+    proximos_status = {
+        "pendente": "em_andamento",
+        "em_andamento": "concluido",
+    }
+
+    proximo_permitido = proximos_status.get(dados.status_atual)
+
+    if dados.novo_status != proximo_permitido:
+        raise HTTPException(
+            status_code=409,
+            detail="Transição não permitida. Siga a sequência do reparo.",
+        )
+
+    comando = (
+        update(Triagem)
+        .where(
+            Triagem.id == triagem_id,
+            Triagem.status == dados.status_atual,
+        )
+        .values(status=dados.novo_status)
+        .execution_options(synchronize_session=False)
+    )
+
+    try:
+        resultado = db.execute(comando)
+
+        if resultado.rowcount != 1:
+            db.rollback()
+
+            triagem = db.get(Triagem, triagem_id)
+
+            if triagem is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Ordem de serviço não encontrada.",
+                )
+
+            raise HTTPException(
+                status_code=409,
+                detail="A OS mudou de status. Atualize a tela e tente novamente.",
+            )
+
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível atualizar o status: conflito nos dados.",
+        )
+
+    triagem = db.get(Triagem, triagem_id)
     db.refresh(triagem)
     return triagem

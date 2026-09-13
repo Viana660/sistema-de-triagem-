@@ -133,3 +133,12 @@ class AtribuicaoTecnico(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     tecnico_id: int | None = Field(gt=0)
+
+StatusOS = Literal["pendente", "em_andamento", "concluido"]
+
+
+class MudancaStatus(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    status_atual: StatusOS
+    novo_status: StatusOS
