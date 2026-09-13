@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancada técnica</title>
+    <link rel="stylesheet" href="/interface/css/style.css">
+    <script src="/interface/js/kanban.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Bancada técnica</h1>
+                <p>Acompanhe as ordens de serviço.</p>
+            </div>
+
+            <button id="atualizar" type="button">Atualizar fila</button>
+        </header>
+            <div class="filtros">
+         <label for="filtro-tecnico">Responsável</label>
+
+            <select id="filtro-tecnico">
+            <option value="todos">Todos os responsáveis</option>
+            <option value="geral">Fila geral</option>
+        </select>
+        </div>
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <div class="quadro">
+            <section class="coluna" aria-labelledby="titulo-pendente">
+                <h2 id="titulo-pendente">
+                    Aguardando análise
+                    <span id="contador-pendente">0</span>
+                </h2>
+                <div id="pendente" class="cartoes"></div>
+            </section>
+            <section class="coluna" aria-labelledby="titulo-andamento">
+                <h2 id="titulo-andamento">
+                    Em reparo
+                    <span id="contador-em_andamento">0</span>
+                </h2>
+                <div id="em_andamento" class="cartoes"></div>
+            </section>
+
+            <section class="coluna" aria-labelledby="titulo-concluido">
+                <h2 id="titulo-concluido">
+                    Concluído
+                    <span id="contador-concluido">0</span>
+                </h2>
+                <div id="concluido" class="cartoes"></div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

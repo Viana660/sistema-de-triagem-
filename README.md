@@ -76,6 +76,8 @@ Acesse no navegador:
 - Aplicação: http://127.0.0.1:8000
 - Documentação da API: http://127.0.0.1:8000/docs
 
+- Bancada técnica: http://127.0.0.1:8000/interface/kanban.html
+
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
 ## Testes automatizados
@@ -148,3 +150,9 @@ Os arquivos do banco e os backups não são versionados.
 - Avanço sequencial da OS: pendente, em andamento e concluído.
 - Bloqueio de saltos e retornos de status.
 - Rejeição de mudanças baseadas em um status desatualizado.
+- Kanban com colunas de espera, reparo e conclusão.
+- Contadores de OS por coluna.
+- Botões para iniciar e concluir reparos.
+- Exibição do nome do técnico responsável.
+- Filtro por técnico ou fila geral.
+- Atualização do quadro após mudanças e conflitos de status.

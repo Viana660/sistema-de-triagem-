@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f5f9;
+    color: #172033;
+}
+
+main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 20px;
+}
+
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+h1 {
+    margin: 0;
+}
+
+button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #1d4ed8;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+button:focus-visible {
+    outline: 3px solid #172033;
+    outline-offset: 3px;
+}
+
+#mensagem {
+    min-height: 24px;
+}
+
+.quadro {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.coluna {
+    padding: 16px;
+    border-radius: 12px;
+    background: #e5eaf2;
+}
+
+.coluna h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+}
+
+.coluna h2 span {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: white;
+}
+
+.cartoes {
+    display: grid;
+    gap: 12px;
+}
+
+.cartao {
+    padding: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+    overflow-wrap: anywhere;
+}
+
+.cartao h3 {
+    margin: 0 0 12px;
+}
+
+.cartao p {
+    margin: 8px 0;
+}
+
+.vazio {
+    color: #475569;
+}
+
+@media (max-width: 800px) {
+    .quadro {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cartao button {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.filtros label {
+    font-weight: bold;
+}
+
+.filtros select {
+    max-width: 100%;
+    padding: 10px;
+    border: 1px solid #64748b;
+    border-radius: 8px;
+    background: white;
+    color: #172033;
+    font-size: 16px;
+}
+
+.filtros select:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}

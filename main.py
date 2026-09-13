@@ -1,3 +1,5 @@
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select, update
@@ -30,7 +32,13 @@ app = FastAPI(
     title="Sistema de Triagem",
     lifespan=lifespan,
 )
+FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
 
+app.mount(
+    "/interface",
+    StaticFiles(directory=str(FRONTEND_DIR), html=True),
+    name="interface",
+)
 
 @app.get("/")
 def inicio():
