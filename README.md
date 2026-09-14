@@ -19,7 +19,7 @@ das ordens de serviço.
 - Exibir as ordens em um quadro Kanban.
 - Atualizar o status: pendente, em andamento e concluído.
 
-## Tecnologias previstas
+## Tecnologias utilizadas
 
 - Python e FastAPI.
 - SQLite e SQLAlchemy.
@@ -27,7 +27,8 @@ das ordens de serviço.
 
 ## Situação
 
-Em desenvolvimento. A implementação será realizada por etapas.
+MVP com as funcionalidades do escopo implementadas, em fase de
+validação do fluxo completo e preparação para apresentação.
 
 ## Autor
 
@@ -174,7 +175,7 @@ Os arquivos do banco e os backups não são versionados.
 - Exibição de erros de validação e de IMEI duplicado na interface.
 - Consulta dos oito itens da vistoria diretamente nos cartões do Kanban.
 - Exibição das observações da OS em uma área que pode ser expandida.
-- Exibiç~so do nome do cliente e da marca/modelo do aparelho nos carto~es do Kanban.
+- Exibição do nome do cliente e da marca/modelo do aparelho nos cartões do Kanban.
 - Atribuição e troca de técnico diretamente nos cartões do Kanban.
 - Retorno à fila geral pela interface, preservando o status da OS.
 - Atualização do quadro e do filtro após salvar o responsável.
