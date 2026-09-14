@@ -185,3 +185,22 @@ Os arquivos do banco e os backups não são versionados.
 Para criar uma triagem, cadastre o cliente e o aparelho pelas respectivas
 interfaces. Depois, abra Nova triagem, selecione os registros e preencha
 o defeito relatado e a vistoria de entrada.
+
+## Validação manual
+
+Fluxo de atendimento testado:
+cadastro de cliente, aparelho e técnico; abertura da OS com vistoria;
+consulta no Kanban; atribuição de responsável; filtro por técnico;
+avanço até a conclusão.
+
+Resultado: fluxo realizado com sucesso.
+
+Persistência verificada: os registros permaneceram disponíveis
+após parar e iniciar novamente o servidor.
+
+Também foi executado um atendimento completo pelo navegador, usando
+registros identificados como TESTE VISUAL.
+
+A OS #10 foi criada com vistoria e observações, atribuída ao técnico,
+consultada pelo filtro e avançada até a conclusão. Após atualizar
+o quadro, o status concluído permaneceu.
