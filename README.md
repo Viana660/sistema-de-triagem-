@@ -84,6 +84,8 @@ Acesse no navegador:
 
 - Cadastro de aparelhos: http://127.0.0.1:8000/interface/equipamentos.html
 
+- Cadastro de técnicos: http://127.0.0.1:8000/interface/tecnicos.html
+
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
 ## Testes automatizados
@@ -176,6 +178,8 @@ Os arquivos do banco e os backups não são versionados.
 - Atribuição e troca de técnico diretamente nos cartões do Kanban.
 - Retorno à fila geral pela interface, preservando o status da OS.
 - Atualização do quadro e do filtro após salvar o responsável.
+- Cadastro de técnicos pelo navegador, com especialidade opcional.
+- Seleção dos técnicos cadastrados na abertura da OS e no Kanban.
 
 Para criar uma triagem, cadastre o cliente e o aparelho pelas respectivas
 interfaces. Depois, abra Nova triagem, selecione os registros e preencha

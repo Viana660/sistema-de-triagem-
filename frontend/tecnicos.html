@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar técnico</title>
+    <link rel="stylesheet" href="/interface/css/style.css">
+    <script src="/interface/js/tecnicos.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Cadastrar técnico</h1>
+                <p>Cadastre os profissionais responsáveis pelos reparos.</p>
+            </div>
+            <a href="/interface/kanban.html">Abrir bancada técnica</a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-tecnico" class="formulario">
+            <fieldset id="campos-tecnico">
+                <legend>Dados do técnico</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        Nome *
+                        <input id="nome" autocomplete="name"
+                               minlength="2" maxlength="255" required>
+                    </label>
+
+                    <label>
+                        Telefone com DDD — somente números *
+                        <input id="telefone" type="tel"
+                               autocomplete="tel"
+                               pattern="[0-9]{10,11}" maxlength="11"
+                               title="Informe 10 ou 11 números, incluindo o DDD."
+                               required>
+                    </label>
+                </div>
+
+                <label>
+                    Especialidade
+                    <input id="especialidade" maxlength="100"
+                           placeholder="Ex.: reparo de placas">
+                </label>
+
+                <p>* Campos obrigatórios.</p>
+                <button type="submit">Cadastrar técnico</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>
