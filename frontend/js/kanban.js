@@ -13,8 +13,8 @@ function definirOcupado(ocupado) {
     operacaoEmCurso = ocupado;
     filtroTecnico.disabled = ocupado;
 
-    document.querySelectorAll("button").forEach((botao) => {
-        botao.disabled = ocupado;
+    document.querySelectorAll("button, select").forEach((elemento) => {
+        elemento.disabled = ocupado;
     });
 }
 
@@ -76,6 +76,54 @@ function criarDetalhes(triagem) {
 
     return detalhes;
 }
+
+function criarAtribuicao(triagem) {
+    const container = document.createElement("div");
+    container.className = "atribuicao-os";
+
+    const label = document.createElement("label");
+    label.textContent = "Técnico responsável";
+    label.htmlFor = `tecnico-os-${triagem.id}`;
+
+    const select = document.createElement("select");
+    select.id = label.htmlFor;
+    select.appendChild(new Option("Fila geral", ""));
+
+    for (const [id, nome] of tecnicosPorId) {
+        select.appendChild(new Option(`${nome} (#${id})`, String(id)));
+    }
+
+    if (
+        triagem.tecnico_id !== null &&
+        !tecnicosPorId.has(triagem.tecnico_id)
+    ) {
+        select.appendChild(new Option(
+            `Técnico #${triagem.tecnico_id}`,
+            String(triagem.tecnico_id)
+        ));
+    }
+
+    select.value = triagem.tecnico_id === null
+        ? ""
+        : String(triagem.tecnico_id);
+
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.textContent = "Salvar responsável";
+
+    botao.addEventListener("click", () => {
+        const tecnicoId = select.value === ""
+            ? null
+            : Number(select.value);
+
+        atribuirTecnico(triagem, tecnicoId);
+    });
+
+    container.append(label, select, botao);
+
+    return container;
+}
+
 function criarCartao(triagem) {
     const cartao = document.createElement("article");
     cartao.className = "cartao";
@@ -101,6 +149,7 @@ function criarCartao(triagem) {
 
     adicionarTexto(cartao, "p", responsavel);
     cartao.appendChild(criarDetalhes(triagem));
+    cartao.appendChild(criarAtribuicao(triagem));
     const proximosStatus = {
         pendente: "em_andamento",
         em_andamento: "concluido"
@@ -260,6 +309,62 @@ async function carregarTriagens() {
         mensagem.textContent =
             "Não foi possível atualizar. Os cartões podem estar desatualizados. Clique em Atualizar fila para tentar novamente.";
 
+        console.error(erro);
+    } finally {
+        definirOcupado(false);
+    }
+}
+
+async function atribuirTecnico(triagem, tecnicoId) {
+    if (operacaoEmCurso) {
+        return;
+    }
+
+    if (tecnicoId === triagem.tecnico_id) {
+        mensagem.textContent =
+            `O responsável da OS #${triagem.id} já é o selecionado.`;
+        return;
+    }
+
+    definirOcupado(true);
+    mensagem.textContent = `Salvando responsável da OS #${triagem.id}...`;
+
+    let aviso;
+
+    try {
+        const resposta = await fetch(
+            `/triagens/${triagem.id}/tecnico`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tecnico_id: tecnicoId
+                })
+            }
+        );
+
+        if (resposta.ok) {
+            aviso = `Responsável da OS #${triagem.id} atualizado.`;
+        } else if (resposta.status === 404) {
+            aviso = "A OS ou o técnico não foi encontrado.";
+        } else {
+            aviso = `A API recusou a alteração (erro ${resposta.status}).`;
+        }
+    } catch (erro) {
+        aviso =
+            "A conexão falhou. Não foi possível confirmar se a alteração foi salva.";
+        console.error(erro);
+    }
+
+    try {
+        await consultarERenderizar();
+        mensagem.textContent = `${aviso} Quadro atualizado.`;
+    } catch (erro) {
+        mensagem.textContent =
+            `${aviso} Não foi possível recarregar o quadro. ` +
+            "Clique em Atualizar fila antes de tentar novamente.";
         console.error(erro);
     } finally {
         definirOcupado(false);

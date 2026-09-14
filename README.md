@@ -172,6 +172,10 @@ Os arquivos do banco e os backups não são versionados.
 - Exibição de erros de validação e de IMEI duplicado na interface.
 - Consulta dos oito itens da vistoria diretamente nos cartões do Kanban.
 - Exibição das observações da OS em uma área que pode ser expandida.
+- Exibiç~so do nome do cliente e da marca/modelo do aparelho nos carto~es do Kanban.
+- Atribuição e troca de técnico diretamente nos cartões do Kanban.
+- Retorno à fila geral pela interface, preservando o status da OS.
+- Atualização do quadro e do filtro após salvar o responsável.
 
 Para criar uma triagem, cadastre o cliente e o aparelho pelas respectivas
 interfaces. Depois, abra Nova triagem, selecione os registros e preencha

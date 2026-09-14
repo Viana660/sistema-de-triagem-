@@ -239,3 +239,33 @@ a {
 .observacoes-os {
     white-space: pre-wrap;
 }
+
+.atribuicao-os {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.atribuicao-os label {
+    font-weight: bold;
+}
+
+.atribuicao-os select {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #64748b;
+    border-radius: 6px;
+    background: white;
+    color: #172033;
+    font: inherit;
+}
+
+.atribuicao-os select:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 2px;
+}
+
+.atribuicao-os button {
+    margin-top: 0;
+}
