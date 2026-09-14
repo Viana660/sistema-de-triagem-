@@ -202,3 +202,40 @@ a {
         grid-template-columns: 1fr;
     }
 }
+.detalhes-os {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #cbd5e1;
+}
+
+.detalhes-os summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #1d4ed8;
+}
+
+.detalhes-os summary:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+.detalhes-os h4 {
+    margin: 16px 0 8px;
+}
+
+.detalhes-os dl {
+    margin: 0;
+}
+
+.detalhes-os dt {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.detalhes-os dd {
+    margin: 4px 0 0;
+}
+
+.observacoes-os {
+    white-space: pre-wrap;
+}

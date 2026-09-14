@@ -21,7 +21,59 @@ function adicionarTexto(elemento, tag, texto) {
     item.textContent = texto;
     elemento.appendChild(item);
 }
+function criarDetalhes(triagem) {
+    const detalhes = document.createElement("details");
+    detalhes.className = "detalhes-os";
 
+    const resumo = document.createElement("summary");
+    resumo.textContent = "Ver vistoria e observações";
+    detalhes.appendChild(resumo);
+
+    adicionarTexto(detalhes, "h4", "Vistoria de entrada");
+
+    const itens = [
+        ["liga", "Aparelho liga"],
+        ["tela_touch", "Tela e touch"],
+        ["traseira", "Tampa traseira"],
+        ["carga", "Conector de carga"],
+        ["cameras", "Câmeras"],
+        ["botoes", "Botões"],
+        ["oxidacao", "Sinais de oxidação"],
+        ["rede", "Wi-Fi e rede móvel"]
+    ];
+
+    const resultados = {
+        sem_avaria_aparente: "Sem avaria aparente",
+        com_avaria: "Com avaria",
+        nao_testado: "Não testado"
+    };
+
+    const lista = document.createElement("dl");
+
+    for (const [campo, titulo] of itens) {
+        const valor = triagem.checklist?.[campo];
+
+        adicionarTexto(lista, "dt", titulo);
+        adicionarTexto(
+            lista,
+            "dd",
+            resultados[valor] ?? "Não informado"
+        );
+    }
+
+    detalhes.appendChild(lista);
+
+    adicionarTexto(detalhes, "h4", "Observações");
+
+    const observacoes = document.createElement("p");
+    observacoes.className = "observacoes-os";
+    observacoes.textContent =
+        triagem.observacoes?.trim() || "Nenhuma observação registrada.";
+
+    detalhes.appendChild(observacoes);
+
+    return detalhes;
+}
 function criarCartao(triagem) {
     const cartao = document.createElement("article");
     cartao.className = "cartao";
@@ -39,7 +91,7 @@ function criarCartao(triagem) {
             ?? `Técnico #${triagem.tecnico_id}`;
 
     adicionarTexto(cartao, "p", responsavel);
-
+    cartao.appendChild(criarDetalhes(triagem));
     const proximosStatus = {
         pendente: "em_andamento",
         em_andamento: "concluido"
