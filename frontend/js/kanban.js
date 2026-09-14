@@ -5,6 +5,8 @@ const filtroTecnico = document.getElementById("filtro-tecnico");
 
 let todasTriagens = [];
 let tecnicosPorId = new Map();
+let clientesPorCpf = new Map();
+let equipamentosPorImei = new Map();
 let operacaoEmCurso = false;
 
 function definirOcupado(ocupado) {
@@ -77,10 +79,17 @@ function criarDetalhes(triagem) {
 function criarCartao(triagem) {
     const cartao = document.createElement("article");
     cartao.className = "cartao";
+    const nomeCliente = clientesPorCpf.get(triagem.cliente_cpf)
+        ?? "Cliente não encontrado";
+
+    const nomeAparelho = equipamentosPorImei.get(triagem.equipamento_imei)
+        ?? "Aparelho não encontrado";
 
     adicionarTexto(cartao, "h3", `OS #${triagem.id}`);
-    adicionarTexto(cartao, "p", `Queixa: ${triagem.defeito_descricao}`);
+    adicionarTexto(cartao, "p", `Cliente: ${nomeCliente}`);
+    adicionarTexto(cartao, "p", `Aparelho: ${nomeAparelho}`);
     adicionarTexto(cartao, "p", `IMEI: ${triagem.equipamento_imei}`);
+    adicionarTexto(cartao, "p", `Queixa: ${triagem.defeito_descricao}`);
 
     const prioridade = triagem.prioridade === "alta" ? "Alta" : "Normal";
     adicionarTexto(cartao, "p", `Prioridade: ${prioridade}`);
@@ -190,28 +199,42 @@ function aplicarFiltro() {
 }
 
 async function consultarERenderizar() {
-    const [respostaTriagens, respostaTecnicos] = await Promise.all([
+    const respostas = await Promise.all([
         fetch("/triagens/"),
-        fetch("/tecnicos/")
+        fetch("/tecnicos/"),
+        fetch("/clientes/"),
+        fetch("/equipamentos/")
     ]);
 
-    if (!respostaTriagens.ok || !respostaTecnicos.ok) {
-        throw new Error("Falha ao consultar ordens de serviço ou técnicos.");
+    if (respostas.some((resposta) => !resposta.ok)) {
+        throw new Error("Não foi possível carregar os dados do quadro.");
     }
 
-    const [triagens, tecnicos] = await Promise.all([
-        respostaTriagens.json(),
-        respostaTecnicos.json()
-    ]);
+    const dados = await Promise.all(
+        respostas.map((resposta) => resposta.json())
+    );
 
-    if (!Array.isArray(triagens) || !Array.isArray(tecnicos)) {
+    if (!dados.every((lista) => Array.isArray(lista))) {
         throw new Error("A API retornou uma resposta inesperada.");
     }
+
+    const [triagens, tecnicos, clientes, equipamentos] = dados;
 
     todasTriagens = triagens;
 
     tecnicosPorId = new Map(
         tecnicos.map((tecnico) => [tecnico.id, tecnico.nome])
+    );
+
+    clientesPorCpf = new Map(
+        clientes.map((cliente) => [cliente.cpf, cliente.nome])
+    );
+
+    equipamentosPorImei = new Map(
+        equipamentos.map((equipamento) => [
+            equipamento.imei,
+            `${equipamento.marca} ${equipamento.modelo}`
+        ])
     );
 
     preencherFiltroTecnicos(tecnicos);
