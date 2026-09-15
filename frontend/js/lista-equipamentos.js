@@ -38,7 +38,13 @@ function criarCartao(equipamento) {
         "p",
         `Descrição: ${equipamento.descricao || "Não informada"}`
     );
+    const editar = document.createElement("a");
+    editar.className = "botao-link";
+    editar.textContent = "Editar aparelho";
+    editar.href =
+        `/interface/editar-equipamento.html?imei=${encodeURIComponent(equipamento.imei)}`;
 
+    cartao.appendChild(editar);
     return cartao;
 }
 

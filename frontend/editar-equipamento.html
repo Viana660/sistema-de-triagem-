@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar aparelho</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=4">
+    <script src="/interface/js/editar-equipamento.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Editar aparelho</h1>
+                <p>Atualize as características do equipamento.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/lista-equipamentos.html">
+                Voltar à lista
+            </a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-edicao" class="formulario">
+            <fieldset id="campos-edicao" disabled>
+                <legend>Dados do aparelho</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        IMEI — não pode ser alterado
+                        <input id="imei" readonly>
+                    </label>
+
+                    <label>
+                        Marca *
+                        <input id="marca" minlength="1"
+                               maxlength="100" required>
+                    </label>
+
+                    <label>
+                        Modelo *
+                        <input id="modelo" minlength="1"
+                               maxlength="100" required>
+                    </label>
+
+                    <label>
+                        Cor *
+                        <input id="cor" minlength="1"
+                               maxlength="50" required>
+                    </label>
+                </div>
+
+                <label>
+                    Descrição adicional
+                    <textarea id="descricao" rows="3"
+                              maxlength="500"></textarea>
+                </label>
+
+                <p>Deixe a descrição vazia para remover a informação.</p>
+                <p>* Campos obrigatórios.</p>
+
+                <button type="submit">Salvar alterações</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

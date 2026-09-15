@@ -71,6 +71,23 @@ ResultadoVistoria = Literal[
     "nao_testado",
 ]
 
+class EquipamentoUpdate(BaseModel):
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        extra="forbid",
+    )
+
+    marca: str | None = Field(default=None, min_length=1, max_length=100)
+    modelo: str | None = Field(default=None, min_length=1, max_length=100)
+    cor: str | None = Field(default=None, min_length=1, max_length=50)
+    descricao: str | None = Field(default=None, max_length=500)
+
+    @field_validator("marca", "modelo", "cor")
+    @classmethod
+    def impedir_valor_nulo(cls, valor):
+        if valor is None:
+            raise ValueError("Este campo não pode ser nulo.")
+        return valor
 
 class ChecklistEntrada(BaseModel):
     model_config = ConfigDict(extra="forbid")

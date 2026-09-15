@@ -13,6 +13,7 @@ from app.schemas import (
     ClienteUpdate,
     EquipamentoCreate,
     EquipamentoOut,
+    EquipamentoUpdate,
     TriagemCreate,
     TriagemOut,
     TecnicoCreate,
@@ -240,6 +241,43 @@ def consultar_equipamento(
             detail="Aparelho não encontrado.",
         )
 
+    return equipamento
+
+@app.patch("/equipamentos/{imei}", response_model=EquipamentoOut)
+def atualizar_equipamento(
+    imei: str,
+    dados: EquipamentoUpdate,
+    db: Session = Depends(get_db),
+):
+    equipamento = db.get(Equipamento, imei)
+
+    if equipamento is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Aparelho não encontrado.",
+        )
+
+    alteracoes = dados.model_dump(exclude_unset=True)
+
+    if not alteracoes:
+        raise HTTPException(
+            status_code=400,
+            detail="Envie pelo menos um campo para atualizar.",
+        )
+
+    for campo, valor in alteracoes.items():
+        setattr(equipamento, campo, valor)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível atualizar: conflito nos dados.",
+        )
+
+    db.refresh(equipamento)
     return equipamento
 
 @app.post("/triagens/", response_model=TriagemOut, status_code=201)
