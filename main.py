@@ -136,6 +136,46 @@ def atualizar_cliente(
     db.refresh(cliente)
     return cliente
 
+@app.delete("/clientes/{cpf}")
+def excluir_cliente(
+    cpf: str,
+    db: Session = Depends(get_db),
+):
+    cliente = db.get(Cliente, cpf)
+
+    if cliente is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Cliente não encontrado.",
+        )
+
+    triagem_vinculada = db.scalar(
+        select(Triagem.id)
+        .where(Triagem.cliente_cpf == cpf)
+        .limit(1)
+    )
+
+    if triagem_vinculada is not None:
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "Este cliente possui ordem de serviço vinculada "
+                "e não pode ser excluído."
+            ),
+        )
+
+    try:
+        db.delete(cliente)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível excluir: o cliente possui vínculos.",
+        )
+
+    return {"mensagem": "Cliente excluído com sucesso."}
+
 @app.post(
     "/equipamentos/",
     response_model=EquipamentoOut,

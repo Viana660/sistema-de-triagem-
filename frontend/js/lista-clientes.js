@@ -7,6 +7,7 @@ let clientes = [];
 let carregando = false;
 let listaDisponivel = false;
 let falhaNaAtualizacao = false;
+let excluindo = false;
 
 function normalizarTexto(texto) {
     return texto
@@ -46,6 +47,18 @@ function criarCartao(cliente) {
         `/interface/editar-cliente.html?cpf=${encodeURIComponent(cliente.cpf)}`;
 
     cartao.appendChild(editar);
+    const excluir = document.createElement("button");
+    excluir.type = "button";
+    excluir.textContent = "Excluir cliente";
+    excluir.className = "botao-excluir";
+    excluir.disabled = excluindo;
+
+    excluir.addEventListener("click", () => {
+        excluirCliente(cliente);
+    });
+
+    cartao.appendChild(excluir);
+
     return cartao;
 }
 
@@ -90,9 +103,92 @@ function renderizarClientes() {
     mensagem.textContent =
         `${aviso}${encontrados.length} cliente(s) encontrado(s).`;
 }
+async function excluirCliente(cliente) {
+    if (carregando || excluindo) {
+        return;
+    }
 
+    const confirmou = window.confirm(
+        `Excluir o cliente "${cliente.nome}" (CPF ${cliente.cpf})?\n\n` +
+        "A exclusão é permanente e só será permitida se não houver " +
+        "ordem de serviço vinculada."
+    );
+
+    if (!confirmou) {
+        return;
+    }
+
+    excluindo = true;
+    botaoAtualizar.disabled = true;
+    busca.disabled = true;
+
+    lista.querySelectorAll("button").forEach((botao) => {
+        botao.disabled = true;
+    });
+
+    mensagem.textContent = "Excluindo cliente...";
+
+    let aviso;
+
+    try {
+        const resposta = await fetch(
+            `/clientes/${encodeURIComponent(cliente.cpf)}`,
+            { method: "DELETE" }
+        );
+
+        if (resposta.ok) {
+            aviso = "Cliente excluído com sucesso.";
+        } else if (resposta.status === 404) {
+            aviso = "O cliente já não está disponível.";
+        } else if (resposta.status === 409) {
+            const resultado = await resposta.json();
+            aviso = resultado.detail;
+        } else {
+            aviso = `Não foi possível confirmar a exclusão (erro ${resposta.status}).`;
+        }
+    } catch (erro) {
+        aviso =
+            "A conexão falhou. Não foi possível confirmar a exclusão.";
+        console.error(erro);
+    }
+
+    try {
+        const resposta = await fetch("/clientes/");
+
+        if (!resposta.ok) {
+            throw new Error("Falha ao atualizar a lista.");
+        }
+
+        const dados = await resposta.json();
+
+        if (!Array.isArray(dados)) {
+            throw new Error("Resposta inesperada da API.");
+        }
+
+        clientes = dados;
+        listaDisponivel = true;
+        falhaNaAtualizacao = false;
+        renderizarClientes();
+
+        mensagem.textContent = `${aviso} ${mensagem.textContent}`;
+    } catch (erro) {
+        falhaNaAtualizacao = true;
+        mensagem.textContent =
+            `${aviso} A lista pode estar desatualizada. ` +
+            "Clique em Atualizar lista antes de tentar novamente.";
+        console.error(erro);
+    } finally {
+        excluindo = false;
+        botaoAtualizar.disabled = false;
+        busca.disabled = !listaDisponivel;
+
+        lista.querySelectorAll("button").forEach((botao) => {
+            botao.disabled = false;
+        });
+    }
+}
 async function carregarClientes() {
-    if (carregando) {
+    if (carregando || excluindo) {
         return;
     }
 
@@ -138,7 +234,7 @@ async function carregarClientes() {
 }
 
 busca.addEventListener("input", () => {
-    if (!carregando && listaDisponivel) {
+    if (!carregando && !excluindo && listaDisponivel) {
         renderizarClientes();
     }
 });

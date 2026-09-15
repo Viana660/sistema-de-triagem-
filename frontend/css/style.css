@@ -319,3 +319,7 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+.botao-excluir {
+    background: #b91c1c;
+}
