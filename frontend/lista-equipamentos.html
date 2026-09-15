@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar aparelhos</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=4">
+    <script src="/interface/js/lista-equipamentos.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Consultar aparelhos</h1>
+                <p>Localize aparelhos por IMEI, marca ou modelo.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/equipamentos.html">
+                Cadastrar aparelho
+            </a>
+
+            <a class="botao-link" href="/interface/kanban.html">
+                Abrir bancada
+            </a>
+        </header>
+
+        <div class="filtros">
+            <label for="busca-equipamento">IMEI, marca ou modelo</label>
+            <input id="busca-equipamento" type="search"
+                   placeholder="Digite para buscar">
+            <button id="atualizar-equipamentos" type="button">
+                Atualizar lista
+            </button>
+        </div>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <div id="lista-equipamentos" class="lista-clientes"></div>
+    </main>
+</body>
+</html>
