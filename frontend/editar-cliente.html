@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar cliente</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=3">
+    <script src="/interface/js/editar-cliente.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Editar cliente</h1>
+                <p>Atualize os dados de contato e identificação.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/lista-clientes.html">
+                Voltar à lista
+            </a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-edicao" class="formulario">
+            <fieldset id="campos-edicao" disabled>
+                <legend>Dados do cliente</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        CPF — não pode ser alterado
+                        <input id="cpf" readonly>
+                    </label>
+
+                    <label>
+                        Nome *
+                        <input id="nome" minlength="2"
+                               maxlength="255" required>
+                    </label>
+
+                    <label>
+                        Telefone com DDD — somente números *
+                        <input id="telefone" type="tel"
+                               pattern="[0-9]{10,11}" maxlength="11"
+                               title="Informe 10 ou 11 números, incluindo o DDD."
+                               required>
+                    </label>
+
+                    <label>
+                        E-mail
+                        <input id="email" type="email" maxlength="255">
+                    </label>
+                </div>
+
+                <label>
+                    Endereço
+                    <textarea id="endereco" rows="3"
+                              maxlength="500"></textarea>
+                </label>
+
+                <p>Deixe e-mail ou endereço vazio para remover a informação.</p>
+                <p>* Campos obrigatórios.</p>
+
+                <button type="submit">Salvar alterações</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

@@ -39,7 +39,13 @@ function criarCartao(cliente) {
         "p",
         `Endereço: ${cliente.endereco || "Não informado"}`
     );
+    const editar = document.createElement("a");
+    editar.className = "botao-link";
+    editar.textContent = "Editar cliente";
+    editar.href =
+        `/interface/editar-cliente.html?cpf=${encodeURIComponent(cliente.cpf)}`;
 
+    cartao.appendChild(editar);
     return cartao;
 }
 
