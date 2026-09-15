@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar clientes</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=3">
+    <script src="/interface/js/lista-clientes.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Consultar clientes</h1>
+                <p>Localize clientes pelo nome ou CPF.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/clientes.html">
+                Cadastrar cliente
+            </a>
+
+            <a class="botao-link" href="/interface/kanban.html">
+                Abrir bancada
+            </a>
+        </header>
+
+        <div class="filtros">
+            <label for="busca-cliente">Nome ou CPF</label>
+            <input id="busca-cliente" type="search"
+                   placeholder="Digite para buscar">
+            <button id="atualizar-clientes" type="button">
+                Atualizar lista
+            </button>
+        </div>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <div id="lista-clientes" class="lista-clientes"></div>
+    </main>
+</body>
+</html>

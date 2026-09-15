@@ -287,3 +287,35 @@ a {
     outline: 3px solid #172033;
     outline-offset: 3px;
 }
+
+.filtros input[type="search"] {
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #64748b;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.filtros input[type="search"]:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+}
+
+.lista-clientes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.lista-clientes .cartao h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+@media (max-width: 400px) {
+    .lista-clientes {
+        grid-template-columns: 1fr;
+    }
+}
