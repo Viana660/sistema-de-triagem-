@@ -7,6 +7,7 @@ let equipamentos = [];
 let carregando = false;
 let listaDisponivel = false;
 let falhaNaAtualizacao = false;
+let excluindo = false;
 
 function normalizarTexto(texto) {
     return texto
@@ -45,6 +46,17 @@ function criarCartao(equipamento) {
         `/interface/editar-equipamento.html?imei=${encodeURIComponent(equipamento.imei)}`;
 
     cartao.appendChild(editar);
+    const excluir = document.createElement("button");
+    excluir.type = "button";
+    excluir.textContent = "Excluir aparelho";
+    excluir.className = "botao-excluir";
+    excluir.disabled = excluindo;
+
+    excluir.addEventListener("click", () => {
+        excluirEquipamento(equipamento);
+    });
+
+    cartao.appendChild(excluir);
     return cartao;
 }
 
@@ -84,8 +96,96 @@ function renderizarEquipamentos() {
         `${aviso}${encontrados.length} aparelho(s) encontrado(s).`;
 }
 
+async function excluirEquipamento(equipamento) {
+    if (carregando || excluindo) {
+        return;
+    }
+
+    const confirmou = window.confirm(
+        `Excluir o aparelho "${equipamento.marca} ${equipamento.modelo}" ` +
+        `(IMEI ${equipamento.imei})?\n\n` +
+        "A exclusão é permanente e só será permitida se não houver " +
+        "ordem de serviço vinculada."
+    );
+
+    if (!confirmou) {
+        return;
+    }
+
+    excluindo = true;
+    botaoAtualizar.disabled = true;
+    busca.disabled = true;
+
+    lista.querySelectorAll("button").forEach((botao) => {
+        botao.disabled = true;
+    });
+
+    mensagem.textContent = "Excluindo aparelho...";
+
+    let aviso;
+
+    try {
+        const resposta = await fetch(
+            `/equipamentos/${encodeURIComponent(equipamento.imei)}`,
+            { method: "DELETE" }
+        );
+
+        if (resposta.ok) {
+            aviso = "Aparelho excluído com sucesso.";
+        } else if (resposta.status === 404) {
+            aviso = "O aparelho já não está disponível.";
+        } else if (resposta.status === 409) {
+            const resultado = await resposta.json();
+            aviso = resultado.detail;
+        } else {
+            aviso =
+                `Não foi possível confirmar a exclusão ` +
+                `(erro ${resposta.status}).`;
+        }
+    } catch (erro) {
+        aviso =
+            "A conexão falhou. Não foi possível confirmar a exclusão.";
+        console.error(erro);
+    }
+
+    try {
+        const resposta = await fetch("/equipamentos/");
+
+        if (!resposta.ok) {
+            throw new Error("Falha ao atualizar a lista.");
+        }
+
+        const dados = await resposta.json();
+
+        if (!Array.isArray(dados)) {
+            throw new Error("Resposta inesperada da API.");
+        }
+
+        equipamentos = dados;
+        listaDisponivel = true;
+        falhaNaAtualizacao = false;
+        renderizarEquipamentos();
+
+        mensagem.textContent = `${aviso} ${mensagem.textContent}`;
+    } catch (erro) {
+        falhaNaAtualizacao = true;
+        mensagem.textContent =
+            `${aviso} A lista pode estar desatualizada. ` +
+            "Clique em Atualizar lista antes de tentar novamente.";
+        console.error(erro);
+    } finally {
+        excluindo = false;
+        botaoAtualizar.disabled = false;
+        busca.disabled = !listaDisponivel;
+
+        lista.querySelectorAll("button").forEach((botao) => {
+            botao.disabled = false;
+        });
+    }
+}
+
 async function carregarEquipamentos() {
-    if (carregando) {
+    if (carregando || excluindo) {
         return;
     }
 
@@ -131,7 +231,7 @@ async function carregarEquipamentos() {
 }
 
 busca.addEventListener("input", () => {
-    if (!carregando && listaDisponivel) {
+    if (!carregando && !excluindo && listaDisponivel) {
         renderizarEquipamentos();
     }
 });

@@ -280,6 +280,46 @@ def atualizar_equipamento(
     db.refresh(equipamento)
     return equipamento
 
+@app.delete("/equipamentos/{imei}")
+def excluir_equipamento(
+    imei: str,
+    db: Session = Depends(get_db),
+):
+    equipamento = db.get(Equipamento, imei)
+
+    if equipamento is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Aparelho não encontrado.",
+        )
+
+    triagem_vinculada = db.scalar(
+        select(Triagem.id)
+        .where(Triagem.equipamento_imei == imei)
+        .limit(1)
+    )
+
+    if triagem_vinculada is not None:
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "Este aparelho possui ordem de serviço vinculada "
+                "e não pode ser excluído."
+            ),
+        )
+
+    try:
+        db.delete(equipamento)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível excluir: o aparelho possui vínculos.",
+        )
+
+    return {"mensagem": "Aparelho excluído com sucesso."}
+
 @app.post("/triagens/", response_model=TriagemOut, status_code=201)
 def cadastrar_triagem(
     dados: TriagemCreate,
