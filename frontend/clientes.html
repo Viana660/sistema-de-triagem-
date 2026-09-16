@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar cliente</title>
     <link rel="stylesheet" href="/interface/css/style.css?v=2">
+    <script src="/interface/js/mascaras.js" defer></script>
     <script src="/interface/js/clientes.js" defer></script>
 </head>
 <body>
@@ -37,19 +38,21 @@
                     </label>
 
                     <label>
-                        CPF — somente números *
+                        CPF *
                         <input id="cpf" inputmode="numeric"
-                               pattern="[0-9]{11}" maxlength="11"
+                               pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}"
+                               maxlength="14"
                                title="Informe os 11 números do CPF."
                                required>
                     </label>
-
                     <label>
-                        Telefone com DDD — somente números *
-                        <input id="telefone" type="tel" autocomplete="tel"
-                               pattern="[0-9]{10,11}" maxlength="11"
-                               title="Informe 10 ou 11 números, incluindo o DDD."
-                               required>
+                        Telefone com DDD *
+                    <input id="telefone" type="tel" autocomplete="tel"
+                            inputmode="numeric"
+                            pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+                            maxlength="15"
+                            title="Informe o DDD e um telefone com 10 ou 11 números."
+                            required>
                     </label>
 
                     <label>

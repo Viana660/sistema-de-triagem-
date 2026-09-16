@@ -7,8 +7,8 @@ let enviando = false;
 function montarDados() {
     return {
         nome: document.getElementById("nome").value.trim(),
-        cpf: document.getElementById("cpf").value.trim(),
-        telefone: document.getElementById("telefone").value.trim(),
+        cpf: somenteNumeros(document.getElementById("cpf").value),
+        telefone: somenteNumeros(document.getElementById("telefone").value),
         email: document.getElementById("email").value.trim() || null,
         endereco: document.getElementById("endereco").value.trim() || null
     };

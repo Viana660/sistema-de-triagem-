@@ -9,9 +9,10 @@ let original = null;
 let salvando = false;
 
 function preencherFormulario(cliente) {
-    document.getElementById("cpf").value = cliente.cpf;
+    document.getElementById("cpf").value = formatarCPF(cliente.cpf);
+    document.getElementById("telefone").value =
+        formatarTelefone(cliente.telefone);
     document.getElementById("nome").value = cliente.nome;
-    document.getElementById("telefone").value = cliente.telefone;
     document.getElementById("email").value = cliente.email ?? "";
     document.getElementById("endereco").value = cliente.endereco ?? "";
 
@@ -21,7 +22,7 @@ function preencherFormulario(cliente) {
 function lerFormulario() {
     return {
         nome: document.getElementById("nome").value.trim(),
-        telefone: document.getElementById("telefone").value.trim(),
+        telefone: somenteNumeros(document.getElementById("telefone").value),
         email: document.getElementById("email").value.trim() || null,
         endereco: document.getElementById("endereco").value.trim() || null
     };

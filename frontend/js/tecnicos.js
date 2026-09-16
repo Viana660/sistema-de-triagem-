@@ -7,7 +7,7 @@ let enviando = false;
 function montarDados() {
     return {
         nome: document.getElementById("nome").value.trim(),
-        telefone: document.getElementById("telefone").value.trim(),
+        telefone: somenteNumeros(document.getElementById("telefone").value),
         especialidade:
             document.getElementById("especialidade").value.trim() || null
     };
