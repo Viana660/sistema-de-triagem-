@@ -27,14 +27,17 @@ das ordens de serviço.
 
 ## Situação
 
-MVP com as funcionalidades do escopo implementadas, em fase de
-validação do fluxo completo e preparação para apresentação.
+MVP implementado e ampliado com consulta, edição e exclusão protegida
+de clientes e aparelhos, edição de técnicos, máscaras de entrada e
+preparação de mensagens para WhatsApp.
+
+As verificações automatizadas executadas foram aprovadas. A validação
+de desempenho, concorrência e compatibilidade entre navegadores
+permanece pendente.
 
 ## Autor
 
 Vinicius de Oliveira Viana
-
-
 
 ## Como executar para desenvolvimento no Windows
 
@@ -74,7 +77,7 @@ Inicie o servidor de desenvolvimento:
 
 Acesse no navegador:
 
-- Aplicação: http://127.0.0.1:8000
+- Página inicial da API (JSON): http://127.0.0.1:8000
 - Documentação da API: http://127.0.0.1:8000/docs
 
 - Bancada técnica: http://127.0.0.1:8000/interface/kanban.html
@@ -86,6 +89,16 @@ Acesse no navegador:
 - Cadastro de aparelhos: http://127.0.0.1:8000/interface/equipamentos.html
 
 - Cadastro de técnicos: http://127.0.0.1:8000/interface/tecnicos.html
+
+- Consultar clientes: http://127.0.0.1:8000/interface/lista-clientes.html
+
+- Consultar aparelhos: http://127.0.0.1:8000/interface/lista-equipamentos.html
+
+- Editar técnicos: http://127.0.0.1:8000/interface/editar-tecnico.html
+
+A edição de clientes e aparelhos é acessada pelos cartões das respectivas
+listas. A preparação da mensagem é acessada pelo link “Preparar mensagem”
+no cartão da OS.
 
 Para encerrar o servidor, pressione Ctrl + C no terminal.
 
@@ -113,6 +126,25 @@ de atualização, sem enviar requisições HTTP.
 A validação do CPF é matemática e não consulta a situação cadastral
 na Receita Federal.
 
+## Verificações complementares
+
+Em 16/09/2026, foram executados:
+
+| Grupo | Resultado |
+|---|---|
+| Testes existentes de CPF e status | 10 aprovados |
+| Verificações funcionais por HTTP em banco temporário | 106 aprovadas |
+| Verificações JavaScript de máscaras e link do WhatsApp | 17 aprovadas |
+| Verificação de sintaxe dos arquivos JavaScript | Sem erros |
+
+As verificações complementares foram executadas com apoio do Codex,
+fora da suíte versionada. O comando unittest deste README executa
+somente os testes disponíveis no diretório tests.
+
+A abertura do WhatsApp foi simulada, sem conexão externa ou envio
+de mensagens. Não foram realizados testes de carga, requisições
+simultâneas ou interação no navegador nesta rodada.
+
 ## Atualização de bancos existentes
 
 Para bancos criados antes da inclusão do técnico responsável na OS,
@@ -130,7 +162,7 @@ sem necessidade de executar essa migração.
 
 Os arquivos do banco e os backups não são versionados.
 
-### Funcionalidades disponíveis
+## Funcionalidades disponíveis
 
 - Cadastro de clientes com CPF, nome e telefone obrigatórios.
 - E-mail e endereço opcionais.
@@ -181,6 +213,18 @@ Os arquivos do banco e os backups não são versionados.
 - Atualização do quadro e do filtro após salvar o responsável.
 - Cadastro de técnicos pelo navegador, com especialidade opcional.
 - Seleção dos técnicos cadastrados na abertura da OS e no Kanban.
+- Consulta de clientes com busca por nome ou CPF.
+- Edição de clientes pela interface, preservando o CPF.
+- Exclusão de clientes somente quando não possuem OS vinculada.
+- Consulta de aparelhos com busca por IMEI, marca ou modelo.
+- Edição de aparelhos pela interface, preservando o IMEI.
+- Exclusão de aparelhos somente quando não possuem OS vinculada.
+- Máscaras de CPF e telefone, com envio de somente números à API.
+- Edição de nome, telefone e especialidade dos técnicos.
+- Prévia de mensagem da OS com aparelho, defeito, prioridade e vistoria.
+- Seleção do técnico destinatário sem alterar o responsável pela OS.
+- Geração de link para abrir o WhatsApp com a mensagem preenchida.
+- Envio da mensagem confirmado pelo usuário no próprio WhatsApp.
 
 Para criar uma triagem, cadastre o cliente e o aparelho pelas respectivas
 interfaces. Depois, abra Nova triagem, selecione os registros e preencha
@@ -204,3 +248,20 @@ registros identificados como TESTE VISUAL.
 A OS #10 foi criada com vistoria e observações, atribuída ao técnico,
 consultada pelo filtro e avançada até a conclusão. Após atualizar
 o quadro, o status concluído permaneceu.
+
+## Limitações atuais
+
+- Não há autenticação nem controle de permissões.
+- Não há implantação pública configurada.
+- O Kanban atualiza por ação do usuário e após operações, sem
+  sincronização automática contínua.
+- A integração com WhatsApp gera um link; não envia mensagens
+  automaticamente nem confirma sua entrega.
+- Os telefones são tratados como brasileiros, com DDD e código
+  internacional 55 na geração do link.
+- Clientes e aparelhos com qualquer OS vinculada, inclusive concluída,
+  não podem ser excluídos.
+- As edições cadastrais não possuem detecção de conflito entre usuários
+  alterando simultaneamente o mesmo campo.
+- As metas de desempenho e a compatibilidade entre navegadores ainda
+  precisam de validação formal.
