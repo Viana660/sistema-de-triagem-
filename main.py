@@ -18,6 +18,7 @@ from app.schemas import (
     TriagemOut,
     TecnicoCreate,
     TecnicoOut,
+    TecnicoUpdate,
     AtribuicaoTecnico,
     MudancaStatus
 )
@@ -375,12 +376,10 @@ def cadastrar_triagem(
     db.refresh(triagem)
     return triagem
 
-
 @app.get("/triagens/", response_model=list[TriagemOut])
 def listar_triagens(db: Session = Depends(get_db)):
     consulta = select(Triagem).order_by(Triagem.id.desc())
     return db.scalars(consulta).all()
-
 
 @app.get("/triagens/{triagem_id}", response_model=TriagemOut)
 def consultar_triagem(
@@ -422,12 +421,10 @@ def cadastrar_tecnico(
     db.refresh(tecnico)
     return tecnico
 
-
 @app.get("/tecnicos/", response_model=list[TecnicoOut])
 def listar_tecnicos(db: Session = Depends(get_db)):
     consulta = select(Tecnico).order_by(Tecnico.nome, Tecnico.id)
     return db.scalars(consulta).all()
-
 
 @app.get("/tecnicos/{tecnico_id}", response_model=TecnicoOut)
 def consultar_tecnico(
@@ -442,6 +439,43 @@ def consultar_tecnico(
             detail="Técnico não encontrado.",
         )
 
+    return tecnico
+
+@app.patch("/tecnicos/{tecnico_id}", response_model=TecnicoOut)
+def atualizar_tecnico(
+    tecnico_id: int,
+    dados: TecnicoUpdate,
+    db: Session = Depends(get_db),
+):
+    tecnico = db.get(Tecnico, tecnico_id)
+
+    if tecnico is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Técnico não encontrado.",
+        )
+
+    alteracoes = dados.model_dump(exclude_unset=True)
+
+    if not alteracoes:
+        raise HTTPException(
+            status_code=400,
+            detail="Envie pelo menos um campo para atualizar.",
+        )
+
+    for campo, valor in alteracoes.items():
+        setattr(tecnico, campo, valor)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Não foi possível atualizar: conflito nos dados.",
+        )
+
+    db.refresh(tecnico)
     return tecnico
 
 @app.patch(

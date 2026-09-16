@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar técnico</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=4">
+    <script src="/interface/js/mascaras.js" defer></script>
+    <script src="/interface/js/editar-tecnico.js" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Editar técnico</h1>
+                <p>Selecione o profissional e atualize seus dados.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/kanban.html">
+                Abrir bancada
+            </a>
+        </header>
+
+        <div class="filtros">
+            <label for="selecao-tecnico">Técnico</label>
+            <select id="selecao-tecnico" disabled>
+                <option value="">Carregando...</option>
+            </select>
+        </div>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form id="form-edicao" class="formulario">
+            <fieldset id="campos-edicao" disabled>
+                <legend>Dados do técnico</legend>
+
+                <div class="grade-formulario">
+                    <label>
+                        Identificador — não pode ser alterado
+                        <input id="tecnico-id" readonly>
+                    </label>
+
+                    <label>
+                        Nome *
+                        <input id="nome" minlength="2"
+                               maxlength="255" required>
+                    </label>
+
+                    <label>
+                        Telefone com DDD *
+                        <input id="telefone" type="tel"
+                               autocomplete="tel" inputmode="numeric"
+                               pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}"
+                               maxlength="15"
+                               title="Informe o DDD e um telefone com 10 ou 11 números."
+                               required>
+                    </label>
+
+                    <label>
+                        Especialidade
+                        <input id="especialidade" maxlength="100">
+                    </label>
+                </div>
+
+                <p>Deixe a especialidade vazia para remover a informação.</p>
+                <p>* Campos obrigatórios.</p>
+
+                <button type="submit">Salvar alterações</button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

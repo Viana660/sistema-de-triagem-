@@ -145,14 +145,29 @@ class TecnicoOut(TecnicoCreate):
     )
 
     id: int
+    
+class TecnicoUpdate(BaseModel):
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        extra="forbid",
+    )
 
+    nome: str | None = Field(default=None, min_length=2, max_length=255)
+    telefone: str | None = Field(default=None, pattern=r"^[0-9]{10,11}$")
+    especialidade: str | None = Field(default=None, max_length=100)
+
+    @field_validator("nome", "telefone")
+    @classmethod
+    def impedir_valor_nulo(cls, valor):
+        if valor is None:
+            raise ValueError("Este campo não pode ser nulo.")
+        return valor
 class AtribuicaoTecnico(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     tecnico_id: int | None = Field(gt=0)
 
 StatusOS = Literal["pendente", "em_andamento", "concluido"]
-
 
 class MudancaStatus(BaseModel):
     model_config = ConfigDict(extra="forbid")
