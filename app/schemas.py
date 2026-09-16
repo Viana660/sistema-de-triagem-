@@ -145,7 +145,7 @@ class TecnicoOut(TecnicoCreate):
     )
 
     id: int
-    
+
 class TecnicoUpdate(BaseModel):
     model_config = ConfigDict(
         str_strip_whitespace=True,
@@ -162,6 +162,7 @@ class TecnicoUpdate(BaseModel):
         if valor is None:
             raise ValueError("Este campo não pode ser nulo.")
         return valor
+
 class AtribuicaoTecnico(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

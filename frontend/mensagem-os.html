@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preparar mensagem</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=4">
+    <script src="/interface/js/mascaras.js" defer></script>
+    <script src="/interface/js/mensagem-os.js?v=3" defer></script>
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Preparar mensagem</h1>
+                <p>Confira o destinatário e os dados da ordem de serviço.</p>
+            </div>
+
+            <a class="botao-link" href="/interface/kanban.html">
+                Voltar à bancada
+            </a>
+        </header>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <form class="formulario">
+            <fieldset id="campos-mensagem" disabled>
+                <legend>Destinatário e conteúdo</legend>
+
+                <label>
+                    Técnico destinatário
+                    <select id="destinatario">
+                        <option value="">Selecione um técnico...</option>
+                    </select>
+                </label>
+
+                <label>
+                    Telefone cadastrado
+                    <input id="telefone-destinatario" readonly>
+                </label>
+
+                <p>
+                    Escolher o destinatário não altera o responsável pela OS.
+                </p>
+
+                <label>
+                    Prévia da mensagem
+                    <textarea id="previa" rows="18" readonly></textarea>
+                </label>
+
+                <p>
+                    Nenhuma mensagem é enviada automaticamente.
+                </p>
+                <button id="abrir-whatsapp" type="button" disabled>
+                    Abrir WhatsApp
+                </button>
+            </fieldset>
+        </form>
+    </main>
+</body>
+</html>

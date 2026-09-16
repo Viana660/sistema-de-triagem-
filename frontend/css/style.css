@@ -323,3 +323,8 @@ a {
 .botao-excluir {
     background: #b91c1c;
 }
+
+.preparar-mensagem {
+    display: block;
+    margin-top: 12px;
+}

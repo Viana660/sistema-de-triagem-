@@ -172,6 +172,14 @@ function criarCartao(triagem) {
         cartao.appendChild(botao);
     }
 
+    const prepararMensagem = document.createElement("a");
+    prepararMensagem.className = "botao-link preparar-mensagem";
+    prepararMensagem.textContent = "Preparar mensagem";
+    prepararMensagem.href =
+        `/interface/mensagem-os.html?os=${encodeURIComponent(triagem.id)}`;
+
+    cartao.appendChild(prepararMensagem);
+
     return cartao;
 }
 
