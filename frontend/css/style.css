@@ -328,3 +328,121 @@ a {
     display: block;
     margin-top: 12px;
 }
+
+/* Navegação lateral */
+.com-menu-lateral {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.menu-lateral {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 16px;
+    background: #12304f;
+    color: white;
+}
+
+.marca-sistema {
+    display: block;
+    margin: 0 12px 32px;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.menu-lateral nav {
+    display: grid;
+    gap: 8px;
+}
+
+.menu-lateral .menu-item {
+    display: block;
+    padding: 12px 14px;
+    border-radius: 8px;
+    color: #e2e8f0;
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.menu-lateral .menu-item:hover,
+.menu-grupo summary:hover {
+    background: #20476c;
+    color: white;
+}
+
+.menu-lateral .menu-item[aria-current="page"] {
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-grupo summary {
+    padding: 12px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.menu-subitens {
+    display: grid;
+    gap: 4px;
+    margin: 8px 0 8px 20px;
+    padding-left: 10px;
+    border-left: 2px solid #54718e;
+}
+
+.menu-lateral a:focus-visible,
+.menu-grupo summary:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+.com-menu-lateral > main {
+    width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+}
+
+/* Mais espaço para os cartões em janelas estreitas */
+@media (min-width: 801px) and (max-width: 1100px) {
+    .com-menu-lateral .quadro {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Em telas pequenas, a navegação fica acima do conteúdo */
+@media (max-width: 800px) {
+    .com-menu-lateral {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-lateral {
+        position: static;
+        height: auto;
+        padding: 16px;
+    }
+
+    .marca-sistema {
+        margin-bottom: 16px;
+    }
+}
+
+/* Submenus de cadastro e consulta */
+.menu-categoria > summary {
+    font-size: 15px;
+}
+
+.menu-categoria .menu-subitens {
+    margin-left: 8px;
+    padding-left: 6px;
+}
+
+.menu-categoria .menu-item {
+    padding: 10px 8px;
+    font-size: 14px;
+}
