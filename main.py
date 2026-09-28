@@ -1,8 +1,13 @@
+import logging
+
+from app.backup import criar_backup_diario
+from typing import Literal
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import select, update
+from sqlalchemy import select, update, or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import Base, engine, get_db
@@ -23,12 +28,21 @@ from app.schemas import (
     MudancaStatus
 )
 
+def agora_utc():
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    backup = criar_backup_diario()
+
+    if backup is not None:
+        logging.getLogger(__name__).info(
+            "Backup automático criado: %s",
+            backup,
+        )
+
     Base.metadata.create_all(bind=engine)
     yield
-
 
 app = FastAPI(
     title="Sistema de Triagem",
@@ -360,6 +374,7 @@ def cadastrar_triagem(
         checklist=dados.checklist.model_dump(),
         observacoes=dados.observacoes,
         status="pendente",
+        criada_em=agora_utc(),
     )
 
     db.add(triagem)
@@ -377,8 +392,31 @@ def cadastrar_triagem(
     return triagem
 
 @app.get("/triagens/", response_model=list[TriagemOut])
-def listar_triagens(db: Session = Depends(get_db)):
-    consulta = select(Triagem).order_by(Triagem.id.desc())
+def listar_triagens(
+    db: Session = Depends(get_db),
+    visao: Literal["todas", "bancada", "historico"] = "todas",
+):
+    momento = agora_utc()
+    consulta = select(Triagem)
+
+    if visao == "bancada":
+        consulta = consulta.where(
+            or_(
+                Triagem.status != "concluido",
+                Triagem.arquivar_em.is_(None),
+                Triagem.arquivar_em > momento,
+            )
+        )
+
+    elif visao == "historico":
+        consulta = consulta.where(
+            Triagem.status == "concluido",
+            Triagem.arquivar_em.is_not(None),
+            Triagem.arquivar_em <= momento,
+        )
+
+    consulta = consulta.order_by(Triagem.id.desc())
+
     return db.scalars(consulta).all()
 
 @app.get("/triagens/{triagem_id}", response_model=TriagemOut)
@@ -395,6 +433,7 @@ def consultar_triagem(
         )
 
     return triagem
+
 
 @app.post("/tecnicos/", response_model=TecnicoOut, status_code=201)
 def cadastrar_tecnico(
@@ -540,13 +579,26 @@ def atualizar_status_triagem(
             detail="Transição não permitida. Siga a sequência do reparo.",
         )
 
+    momento = agora_utc()
+
+    alteracoes = {
+        "status": dados.novo_status,
+    }
+
+    if dados.novo_status == "em_andamento":
+        alteracoes["iniciada_em"] = momento
+
+    elif dados.novo_status == "concluido":
+        alteracoes["concluida_em"] = momento
+        alteracoes["arquivar_em"] = momento + timedelta(hours=15)
+
     comando = (
         update(Triagem)
         .where(
             Triagem.id == triagem_id,
             Triagem.status == dados.status_atual,
         )
-        .values(status=dados.novo_status)
+        .values(**alteracoes)
         .execution_options(synchronize_session=False)
     )
 

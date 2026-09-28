@@ -37,6 +37,7 @@
 
         <nav aria-label="Navegação principal">
             ${link("Bancada", "kanban.html")}
+            ${link("Histórico", "historico.html")}
             ${link("Nova triagem", "triagem.html")}
 
             <details class="menu-grupo" open>

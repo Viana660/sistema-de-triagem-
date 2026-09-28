@@ -1,4 +1,8 @@
-const estados = ["pendente", "em_andamento", "concluido"];
+const modoHistorico = document.body.dataset.visao === "historico";
+const visao = modoHistorico ? "historico" : "bancada";
+const estados = modoHistorico
+    ? ["concluido"]
+    : ["pendente", "em_andamento", "concluido"];
 const mensagem = document.getElementById("mensagem");
 const botaoAtualizar = document.getElementById("atualizar");
 const filtroTecnico = document.getElementById("filtro-tecnico");
@@ -124,6 +128,20 @@ function criarAtribuicao(triagem) {
     return container;
 }
 
+function formatarData(valor) {
+    if (!valor) {
+        return "Não registrada";
+    }
+
+    const data = new Date(valor);
+
+    if (Number.isNaN(data.getTime())) {
+        return "Data indisponível";
+    }
+
+    return data.toLocaleString("pt-BR");
+}
+
 function criarCartao(triagem) {
     const cartao = document.createElement("article");
     cartao.className = "cartao";
@@ -134,6 +152,9 @@ function criarCartao(triagem) {
         ?? "Aparelho não encontrado";
 
     adicionarTexto(cartao, "h3", `OS #${triagem.id}`);
+    adicionarTexto(cartao,"p",`Abertura: ${formatarData(triagem.criada_em)}`);
+    adicionarTexto(cartao,"p",`Início do reparo: ${formatarData(triagem.iniciada_em)}`);
+    adicionarTexto(cartao,"p",`Conclusão: ${formatarData(triagem.concluida_em)}`);
     adicionarTexto(cartao, "p", `Cliente: ${nomeCliente}`);
     adicionarTexto(cartao, "p", `Aparelho: ${nomeAparelho}`);
     adicionarTexto(cartao, "p", `IMEI: ${triagem.equipamento_imei}`);
@@ -149,7 +170,11 @@ function criarCartao(triagem) {
 
     adicionarTexto(cartao, "p", responsavel);
     cartao.appendChild(criarDetalhes(triagem));
-    cartao.appendChild(criarAtribuicao(triagem));
+
+    if (!modoHistorico) {
+        cartao.appendChild(criarAtribuicao(triagem));
+    }
+
     const proximosStatus = {
         pendente: "em_andamento",
         em_andamento: "concluido"
@@ -178,7 +203,7 @@ function criarCartao(triagem) {
     prepararMensagem.href =
         `/interface/mensagem-os.html?os=${encodeURIComponent(triagem.id)}`;
 
-    cartao.appendChild(prepararMensagem);
+       cartao.appendChild(prepararMensagem);
 
     return cartao;
 }
@@ -257,7 +282,7 @@ function aplicarFiltro() {
 
 async function consultarERenderizar() {
     const respostas = await Promise.all([
-        fetch("/triagens/"),
+        fetch(`/triagens/?visao=${visao}`),
         fetch("/tecnicos/"),
         fetch("/clientes/"),
         fetch("/equipamentos/")
@@ -448,3 +473,27 @@ filtroTecnico.addEventListener("change", () => {
 });
 
 carregarTriagens();
+
+setInterval(() => {
+    if (document.visibilityState === "visible" && !operacaoEmCurso) {
+        const temResponsavelNaoSalvo = todasTriagens.some((triagem) => {
+            const seletor = document.getElementById(
+                `tecnico-os-${triagem.id}`
+            );
+
+            if (!seletor) {
+                return false;
+            }
+
+            const original = triagem.tecnico_id === null
+                ? ""
+                : String(triagem.tecnico_id);
+
+            return seletor.value !== original;
+        });
+
+        if (!temResponsavelNaoSalvo) {
+            carregarTriagens();
+        }
+    }
+}, 60000);

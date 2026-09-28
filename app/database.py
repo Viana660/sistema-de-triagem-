@@ -1,8 +1,13 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+import os
+
+DATABASE_URL = os.environ.get(
+   "TRIAGEM_DATABASE_URL",
+   "sqlite:///./assistencia.db",
+)
 
 
-DATABASE_URL = "sqlite:///./assistencia.db"
 
 engine = create_engine(
     DATABASE_URL,

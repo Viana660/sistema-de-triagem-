@@ -1,7 +1,8 @@
 from sqlalchemy import ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
-
+from datetime import datetime
+from sqlalchemy import DateTime
 
 class Cliente(Base):
     __tablename__ = "clientes"
@@ -77,6 +78,26 @@ class Triagem(Base):
         String(20),
         nullable=False,
         default="pendente",
+    )
+
+    criada_em: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
+    iniciada_em: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
+    concluida_em: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
+    arquivar_em: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
     )
 
 class Tecnico(Base):

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de ordens de serviço</title>
+    <link rel="stylesheet" href="/interface/css/style.css?v=7">
+    <script src="/interface/js/kanban.js?v=4" defer></script>
+    <script src="/interface/js/menu.js?v=3" defer></script>
+</head>
+<body data-visao="historico">
+    <main>
+        <header class="cabecalho">
+            <div>
+                <h1>Histórico de ordens de serviço</h1>
+                <p>Ordens concluídas há pelo menos 15 horas.</p>
+            </div>
+
+            <button id="atualizar" type="button">
+                Atualizar histórico
+            </button>
+        </header>
+
+        <div class="filtros">
+            <label for="filtro-tecnico">Responsável</label>
+            <select id="filtro-tecnico">
+                <option value="todos">Todos os responsáveis</option>
+                <option value="geral">Fila geral</option>
+            </select>
+        </div>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+
+        <section class="coluna">
+            <h2>
+                Concluídas
+                <span id="contador-concluido">0</span>
+            </h2>
+            <div id="concluido" class="cartoes"></div>
+        </section>
+    </main>
+</body>
+</html>

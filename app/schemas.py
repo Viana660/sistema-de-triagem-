@@ -1,7 +1,8 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from app.validators import cpf_valido
 from typing import Literal
-
+from datetime import datetime, timezone
+from pydantic import field_serializer
 
 class ClienteBase(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
@@ -125,6 +126,25 @@ class TriagemOut(TriagemCreate):
 
     id: int
     status: Literal["pendente", "em_andamento", "concluido"]
+    criada_em: datetime | None = None
+    iniciada_em: datetime | None = None
+    concluida_em: datetime | None = None
+    arquivar_em: datetime | None = None
+
+    @field_serializer(
+        "criada_em",
+        "iniciada_em",
+        "concluida_em",
+        "arquivar_em",
+    )
+    def serializar_data(self, valor: datetime | None):
+        if valor is None:
+            return None
+
+        if valor.tzinfo is None:
+            valor = valor.replace(tzinfo=timezone.utc)
+
+        return valor.astimezone(timezone.utc).isoformat()
 
 class TecnicoCreate(BaseModel):
     model_config = ConfigDict(

@@ -1,5 +1,7 @@
+from unittest.mock import patch
+from main import listar_triagens
 import unittest
-
+from datetime import timedelta
 from fastapi import HTTPException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -118,3 +120,70 @@ class TestStatusTriagem(unittest.TestCase):
             self.mudar_status("pendente", "em_andamento")
 
         self.assertEqual(contexto.exception.status_code, 404)
+
+    def test_registra_datas_e_prazo_do_historico(self):
+        resultado = self.mudar_status("pendente", "em_andamento")
+
+        self.assertIsNotNone(resultado.iniciada_em)
+        self.assertIsNone(resultado.concluida_em)
+        self.assertIsNone(resultado.arquivar_em)
+
+        inicio = resultado.iniciada_em
+
+        resultado = self.mudar_status("em_andamento", "concluido")
+
+        self.assertEqual(resultado.iniciada_em, inicio)
+        self.assertIsNotNone(resultado.concluida_em)
+        self.assertGreaterEqual(resultado.concluida_em, inicio)
+        self.assertEqual(
+            resultado.arquivar_em - resultado.concluida_em,
+            timedelta(hours=15),
+        )
+
+    def test_separar_historico_dentro_de_15_horas(self):
+        self.mudar_status("pendente", "em_andamento")
+        resultado = self.mudar_status("em_andamento", "concluido")
+        prazo = resultado.arquivar_em
+
+        with patch(
+            "main.agora_utc",
+            return_value=prazo - timedelta(seconds=1),
+        ):
+            bancada = listar_triagens(
+                db=self.db,
+                visao="bancada",
+            )
+            historico = listar_triagens(
+                db=self.db,
+                visao="historico",
+            )
+
+            self.assertEqual(
+                [os.id for os in bancada],
+                [self.triagem_id],
+            )
+            self.assertEqual(historico, [])
+
+        with patch("main.agora_utc", return_value=prazo):
+            bancada = listar_triagens(
+                db=self.db,
+                visao="bancada",
+            )
+            historico = listar_triagens(
+                db=self.db,
+                visao="historico",
+            )
+            todas = listar_triagens(
+                db=self.db,
+                visao="todas",
+            )
+
+            self.assertEqual(bancada, [])
+            self.assertEqual(
+                [os.id for os in historico],
+                [self.triagem_id],
+            )
+            self.assertEqual(
+                [os.id for os in todas],
+                [self.triagem_id],
+            )
