@@ -118,6 +118,13 @@ Os testes verificam:
 - Bloqueio de saltos e retornos de status.
 - Rejeição de pedidos baseados em um status desatualizado.
 - Retorno de erro para uma OS inexistente.
+- Registro das datas de início e conclusão do reparo.
+- Separação entre bancada e histórico no limite de 15 horas.
+- Criação e validação de backups.
+- Prevenção de backups automáticos repetidos no mesmo dia.
+- Rejeição de arquivos ausentes, inválidos ou sem as tabelas obrigatórias.
+- Verificação e cancelamento da restauração sem substituir dados.
+- Restauração com preservação e recuperação do estado anterior.
 
 Os testes de status utilizam um banco SQLite em memória, sem alterar
 os registros do banco da aplicação. Eles verificam diretamente a função
@@ -125,6 +132,10 @@ de atualização, sem enviar requisições HTTP.
 
 A validação do CPF é matemática e não consulta a situação cadastral
 na Receita Federal.
+
+Os 22 testes da suíte foram executados e aprovados.
+Os testes de backup e restauração utilizam arquivos SQLite temporários,
+sem alterar o banco dos atendimentos.
 
 ## Verificações complementares
 
@@ -157,10 +168,102 @@ pare o servidor e execute:
 A migração cria um backup em `backups/` antes de adicionar a coluna
 `tecnico_id`. As OS existentes permanecem na fila geral.
 
+Para bancos criados antes da inclusão das datas da OS, pare o sistema
+e execute na raiz do projeto:
+
+```powershell
+.\.venv\Scripts\python.exe migrations/002_adicionar_datas_triagem.py
+```
+
+A migração cria uma cópia de segurança e adiciona as colunas de datas.
+Datas desconhecidas dos atendimentos antigos permanecem vazias.
+As OS já concluídas recebem prazo de entrada no histórico de 15 horas
+a partir da migração.
+
 Em uma instalação nova, a estrutura atual é criada ao iniciar a aplicação,
-sem necessidade de executar essa migração.
+sem necessidade de executar essas migrações.
 
 Os arquivos do banco e os backups não são versionados.
+
+## Datas e histórico das ordens de serviço
+
+Novas OS registram automaticamente a data de criação. O avanço do status
+registra o início do reparo e a conclusão.
+
+As datas são armazenadas em UTC e exibidas no horário local do computador.
+Datas desconhecidas de registros antigos aparecem como “Não registrada”.
+
+Após 15 horas da conclusão, a OS deixa a consulta da bancada e passa
+para o histórico, sem exclusão dos dados.
+
+O histórico está disponível pelo menu lateral ou em:
+http://127.0.0.1:8000/interface/historico.html
+
+A bancada e o histórico consultam atualizações a cada 60 segundos
+enquanto a página está visível. A atualização automática é adiada
+durante operações ou quando há uma seleção de responsável não salva.
+
+## Backup e restauração
+
+Execute os comandos abaixo na raiz do projeto. Eles usam o banco
+configurado em TRIAGEM_DATABASE_URL ou, por padrão, assistencia.db
+na pasta de execução.
+
+### Backup manual
+
+```powershell
+.\.venv\Scripts\python.exe -c "from app.backup import criar_backup; print(criar_backup())"
+```
+
+O backup é criado na pasta backups, ao lado do banco utilizado.
+Cada cópia manual recebe um nome com data e hora e passa por uma
+verificação de integridade.
+
+### Backup automático
+
+Ao iniciar o sistema, se o banco já existir, é criado um backup
+automático por dia, identificado como automatico_AAAAMMDD.db.
+
+O backup automático não é repetido nas demais aberturas do mesmo dia.
+A rotina acontece somente na inicialização; manter o sistema aberto
+durante vários dias não gera novas cópias diariamente.
+
+Falhas na rotina de backup interrompem a inicialização.
+Não há exclusão automática de backups antigos.
+
+### Verificar um backup
+
+Substitua NOME_DO_BACKUP.db pelo nome do arquivo escolhido:
+
+```powershell
+.\.venv\Scripts\python.exe restaurar_backup.py "backups\NOME_DO_BACKUP.db" --verificar
+```
+
+A verificação confere a integridade, as tabelas e colunas obrigatórias,
+os vínculos declarados no banco e mostra a quantidade de registros.
+Ela não substitui os dados nem valida todas as regras de cada cadastro.
+
+Backups antigos sem a estrutura exigida pela versão atual são rejeitados.
+
+### Restaurar um backup
+
+Feche o sistema e pare todos os servidores. Execute:
+
+```powershell
+.\.venv\Scripts\python.exe restaurar_backup.py "backups\NOME_DO_BACKUP.db"
+```
+
+Confira os caminhos exibidos e digite RESTAURAR para confirmar.
+
+A restauração substitui os dados atuais pelos dados do backup;
+não combina registros. Antes da substituição, cria e valida uma
+cópia do banco atual, permitindo recuperar o estado anterior.
+
+O comando não detecta automaticamente se o sistema está aberto.
+Backup e restauração ainda são operados pelo terminal.
+
+As cópias ficam no mesmo disco do banco. Para proteção contra falha
+do dispositivo, mantenha também uma cópia em outro local seguro.
 
 ## Funcionalidades disponíveis
 
@@ -253,8 +356,9 @@ o quadro, o status concluído permaneceu.
 
 - Não há autenticação nem controle de permissões.
 - Não há implantação pública configurada.
-- O Kanban atualiza por ação do usuário e após operações, sem
-  sincronização automática contínua.
+- A atualização automática consulta o servidor a cada 60 segundos,
+  somente com a página visível e sem operações ou seleção de
+  responsável pendentes; não há sincronização instantânea.
 - A integração com WhatsApp gera um link; não envia mensagens
   automaticamente nem confirma sua entrega.
 - Os telefones são tratados como brasileiros, com DDD e código
